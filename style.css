@@ -1,4 +1,88 @@
-#timer {
+body {
+    background-color: #30e3ca;
+    color: #e4f9f5;
+    font-family: 'ArialRounded', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.container {
+    background-color: #11999e;
+    max-width: 650px;
+    margin: auto;
+    padding-top: 30px;
+    border-radius: 5px;
+    min-height: 400px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.settings{
+    margin: 0 30px 0 30px;
+    padding-bottom: 30px;
+}
+
+.setting {
+    display: grid;
+    font-size: 2rem;
+    grid-template-columns: 3fr 1fr;
+}
+
+.value {
+    width: 50px;
+}
+
+.control {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.control div {
+    margin : 0 10px 0 10px;
+}
+
+.button{
+    font-size: 2rem;
+    background-color: #40514e;
+    text-align: center;
+    margin: 30px 100px 30px 100px;
+    opacity: 0.5;
+    transition: opacity 1s;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 0px 10px 0px;
+}
+
+.button:hover {
+    opacity: 1;
+}
+
+.plus, .minus {
+    border: none;
+    background-color: transparent;
+    color: #e4f9f5;
+    cursor: pointer;
+    font-size: 2rem;
+}
+
+.plus:focus, .minus:focus {
+    outline: none;
+}
+
+.timer {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.digit {
+    font-size: 5rem;
+    margin-bottom: 50px;
 }

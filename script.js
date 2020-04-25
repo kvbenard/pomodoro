@@ -1,6 +1,16 @@
-const timer = document.querySelector('#timer');
-const startButton = document.querySelector('#startButton');
-const settingsOk = document.querySelector('#settings_ok');
+const timerContainer = document.querySelector('.timer');
+const settingsContainer = document.querySelector('.settings');
+
+const startButton = document.querySelector('.start');
+const settingsOk = document.querySelector('.validate_settings');
+
+const plusButtons = document.querySelectorAll(".plus");
+const minusButtons = document.querySelectorAll(".minus");
+
+const workDurationElem = document.querySelector('#work_duration');
+const shortBreakDurationElem = document.querySelector('#short_break_duration');
+const longBreakDurationElem = document.querySelector('#long_break_duration');
+const longBreakAfterElem = document.querySelector('#long_break_after');
 
 let workDuration = 0;
 let shortBreakDuration = 0;
@@ -11,8 +21,7 @@ let intervalBeforePause = 0;
 
 let currentState = "stopped";
 
-const minutesSpan = document.querySelector('#minutes');
-const secondsSpan = document.querySelector('#seconds');
+const digitElem = document.querySelector('.digit');
 
 const currentStateDiv = document.querySelector("#current_state");
 
@@ -31,31 +40,42 @@ const changeText = (div, newText) => {
     div.replaceChild(document.createTextNode(newText), div.firstChild);
 }
 
+// Update the current time displayed
+const updateTime = (time) => {
+    currentTime = time;
+    let minutes = Math.floor(currentTime / 60);
+    let seconds = currentTime % 60;
+
+    changeText(digitElem, twoDigits(minutes) + ":" + twoDigits(seconds));
+}
+
 // Set the current timer's state
 const setCurrentState = (newState) => {
+
     switch (newState) {
         case "work":
             currentState = "work";
-            changeText(currentStateDiv, `Time to work ! ${intervalBeforePause} intervals before a long break !`);
-            currentTime = workDuration * 60;
+            changeText(currentStateDiv, `Time to work !`);
+            updateTime(workDuration * 60);
             startButton.disabled = false;
             break;
         case "shortBreak":
             currentState = "shortBreak";
             changeText(currentStateDiv, "Take a short break !")
-            currentTime = shortBreakDuration * 60;
+            updateTime(shortBreakDuration * 60);
             startButton.disabled = false;
             break;
         case "longBreak":
             currentState = "longBreak";
+            intervalBeforePause = longBreakAfter;
             changeText(currentStateDiv, "Take a Long Break !")
-            currentTime = longBreakDuration * 60;
+            updateTime(longBreakDuration * 60);
             startButton.disabled = false;
             break;
         case "ready":
             currentState = "ready";
             changeText(currentStateDiv, `Ready to start !`);
-            currentTime = workDuration * 60;
+            updateTime(workDuration * 60);
             startButton.disabled = false;
             break;
         default:
@@ -63,20 +83,11 @@ const setCurrentState = (newState) => {
     }
 }
 
-// Update the current time displayed
-const updateTime = () => {
-    let minutes = Math.floor(currentTime / 60);
-    let seconds = currentTime % 60;
-
-    changeText(minutesSpan, twoDigits(minutes) + ":" + twoDigits(seconds));
-}
-
 // Update continuously the timer
 const runTimer = () => {
 
-    updateTime();
+    updateTime(currentTime - 1);
 
-    currentTime--;
     if (currentTime >= 0) {
         time();
     } else {
@@ -101,20 +112,44 @@ const time = () => {
 
 // Validate the settings and prepare the timer
 settingsOk.addEventListener("click", () => {
-    workDuration = document.querySelector('#work_duration').value;
-    shortBreakDuration = document.querySelector('#short_break_duration').value;
-    longBreakDuration = document.querySelector('#long_break_duration').value;
-    longBreakAfter = document.querySelector('#long_break_after').value;
+    workDuration = parseInt(workDurationElem.textContent);
+    shortBreakDuration = parseInt(shortBreakDurationElem.textContent);
+    longBreakDuration = parseInt(longBreakDurationElem.textContent);
+    longBreakAfter = parseInt(longBreakAfterElem.textContent);
 
-    currentTime = Number(workDuration) * 60;
+    currentTime = workDuration * 60;
     intervalBeforePause = longBreakAfter;
 
+    settingsContainer.classList.add("hidden");
+    timerContainer.classList.remove("hidden");
+
     updateTime();
-    setCurrentState("ready");
+    setCurrentState("work");
 });
 
 // Run the timer
 startButton.addEventListener("click", () => {
-    setCurrentState("work");
     runTimer();
 });
+
+for (plusButton of plusButtons) {
+    plusButton.addEventListener('click', (event) => {
+        let correspondingValueElem = event.target.parentNode.querySelector(".value");
+        let currentValue = parseInt(correspondingValueElem.textContent);
+        if (currentValue < 60) {
+            currentValue++;
+            changeText(correspondingValueElem, twoDigits(currentValue));
+        }
+    })
+}
+
+for (minusButton of minusButtons) {
+    minusButton.addEventListener('click', (event) => {
+        let correspondingValueElem = event.target.parentNode.querySelector(".value");
+        let currentValue = parseInt(correspondingValueElem.textContent);
+        if (currentValue > 1) {
+            currentValue--;
+            changeText(correspondingValueElem, twoDigits(currentValue));
+        }
+    })
+}
